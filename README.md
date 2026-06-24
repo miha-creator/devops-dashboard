@@ -92,3 +92,15 @@ Every `git push` triggers the pipeline:
 - Writing multi-stage CI/CD pipelines
 - Using Docker SDK for Python to inspect containers at runtime
 - Debugging Docker networking between containers
+
+## 📊 Monitoring
+
+| Service | URL | Purpose |
+|---------|-----|---------|
+| Prometheus | http://localhost:9090 | Metrics collection |
+| Grafana | http://localhost:3000 | Visualization |
+
+### Metrics exposed at `/metrics`:
+- `docker_containers_running` — number of running containers
+- `docker_containers_total` — total containers
+- `dashboard_requests_total` — total HTTP requests
