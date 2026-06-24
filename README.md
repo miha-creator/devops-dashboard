@@ -17,6 +17,8 @@ A lightweight container monitoring dashboard built to demonstrate core DevOps sk
 | Docker Compose | Multi-container orchestration |
 | GitLab CI/CD | Automated pipeline (test → build → deploy) |
 | GitLab Runner | Self-hosted CI executor |
+| Prometheus | Metrics collection |
+| Grafana | Metrics visualization |
 
 ## 🏗 Architecture
 Git Push
@@ -41,24 +43,38 @@ DevOps Dashboard
 
 (Flask + Docker SDK)
 
+├── /          → Container list UI
+
+├── /metrics   → Prometheus metrics
+
+├── /api/containers → REST API
+
+└── /health    → Health check
+
 │
 
 ▼
 
-Reads Docker socket → shows
+Prometheus → Grafana
 
-all containers, status, ports
+(scrapes /metrics every 15s)
 ## 🚀 Quick Start
 
 **Requirements:** Docker, Docker Compose
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/miha-creator/devops-dashboard.git
 cd devops-dashboard
 docker compose up --build
 ```
 
-Open http://localhost:5001
+| Service | URL |
+|---------|-----|
+| Dashboard | http://localhost:5001 |
+| Prometheus | http://localhost:9090 |
+| Grafana | http://localhost:3000 |
+
+Grafana login: `admin` / `admin`
 
 ## 📁 Project Structure
 devops-dashboard/
@@ -69,14 +85,17 @@ devops-dashboard/
 
 │   └── requirements.txt    # Python dependencies
 
+├── monitoring/
+
+│   └── prometheus.yml      # Prometheus scrape config
+
 ├── Dockerfile              # Container image definition
 
-├── docker-compose.yml      # Local development setup
+├── docker-compose.yml      # Full stack setup
 
 ├── .gitlab-ci.yml          # CI/CD pipeline
 
 └── README.md
-
 ## ⚙️ CI/CD Pipeline
 
 Every `git push` triggers the pipeline:
@@ -85,6 +104,14 @@ Every `git push` triggers the pipeline:
 2. **build** — builds Docker image tagged with commit SHA
 3. **deploy** — replaces running container with new image
 
+## 📊 Metrics
+
+Exposed at `/metrics` for Prometheus:
+
+- `docker_containers_running` — number of running containers
+- `docker_containers_total` — total containers
+- `dashboard_requests_total` — total HTTP requests to dashboard
+
 ## 📌 What I Learned
 
 - Setting up a self-hosted GitLab instance with Docker Compose
@@ -92,15 +119,5 @@ Every `git push` triggers the pipeline:
 - Writing multi-stage CI/CD pipelines
 - Using Docker SDK for Python to inspect containers at runtime
 - Debugging Docker networking between containers
-
-## 📊 Monitoring
-
-| Service | URL | Purpose |
-|---------|-----|---------|
-| Prometheus | http://localhost:9090 | Metrics collection |
-| Grafana | http://localhost:3000 | Visualization |
-
-### Metrics exposed at `/metrics`:
-- `docker_containers_running` — number of running containers
-- `docker_containers_total` — total containers
-- `dashboard_requests_total` — total HTTP requests
+- Instrumenting a Flask app with Prometheus metrics
+- Building Grafana dashboards from custom metrics
