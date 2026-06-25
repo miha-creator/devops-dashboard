@@ -19,6 +19,8 @@ A lightweight container monitoring dashboard built to demonstrate core DevOps sk
 | GitLab Runner | Self-hosted CI executor |
 | Prometheus | Metrics collection |
 | Grafana | Metrics visualization |
+| Kubernetes (minikube) | Container orchestration |
+| kubectl | Kubernetes CLI |
 
 ## 🏗 Architecture
 Git Push
