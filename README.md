@@ -121,3 +121,41 @@ Exposed at `/metrics` for Prometheus:
 - Debugging Docker networking between containers
 - Instrumenting a Flask app with Prometheus metrics
 - Building Grafana dashboards from custom metrics
+
+## ☸️ Kubernetes
+
+Приложение задеплоено в локальный кластер minikube с 2 репликами.
+
+### Запуск в Kubernetes
+
+```bash
+# Запустить кластер
+minikube start --driver=docker
+
+# Собрать образ внутри minikube
+eval $(minikube docker-env)
+docker build -f Dockerfile.k8s -t devops-dashboard-k8s:latest .
+
+# Задеплоить
+kubectl apply -f k8s/
+
+# Открыть в браузере
+minikube service devops-dashboard --url
+```
+
+### Полезные команды
+
+```bash
+kubectl get pods                          # список подов
+kubectl get services                      # список сервисов
+kubectl logs <pod-name>                   # логи пода
+kubectl delete pod <pod-name>             # удалить под (k8s пересоздаст автоматически)
+kubectl scale deployment devops-dashboard --replicas=3  # масштабирование
+```
+
+### Что демонстрирует
+
+- Deployment с 2 репликами
+- Self-healing — при удалении пода k8s автоматически создаёт новый
+- NodePort Service для доступа извне кластера
+- Передача переменных окружения через Downward API (имя пода, namespace)
