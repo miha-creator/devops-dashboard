@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-dashboard
+  labels:
+    app: devops-dashboard
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: devops-dashboard
+  template:
+    metadata:
+      labels:
+        app: devops-dashboard
+    spec:
+      containers:
+        - name: devops-dashboard
+          image: devops-dashboard-k8s:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: APP_VERSION
+              value: "1.0.0"
